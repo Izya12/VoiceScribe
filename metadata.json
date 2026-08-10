@@ -1,0 +1,6 @@
+{
+  "name": "VoiceScribe AI",
+  "description": "Офлайн транскрипция аудио и видео с поддержкой Whisper, диаризации спикеров и экспорта в SRT, VTT, TXT и JSON.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

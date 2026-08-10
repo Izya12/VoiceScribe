@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">VoiceScribe AI</string>
+    <string name="nav_home">Главная</string>
+    <string name="nav_jobs">Записи</string>
+    <string name="nav_models">Модели</string>
+    <string name="nav_benchmarks">Железо</string>
+    
+    <string name="home_title">Локальная AI Транскрипция</string>
+    <string name="home_subtitle">100% Офлайн распознавание аудио и видео на устройстве</string>
+    <string name="select_file_button">Выберите аудио или видео файл</string>
+    <string name="supported_formats">Поддерживаются MP3, WAV, M4A, OGG, MP4, MKV</string>
+    
+    <string name="transcription_settings">Параметры распознавания</string>
+    <string name="whisper_model">Модель Whisper GGML</string>
+    <string name="recognition_language">Язык распознавания</string>
+    <string name="enable_diarization">Диаризация спикеров (разделение по голосам)</string>
+    <string name="enable_vad">Детекция голоса (VAD срез тишины)</string>
+    <string name="start_transcription">Начать транскрипцию</string>
+    
+    <string name="jobs_title">История транскрипций</string>
+    <string name="jobs_subtitle">Все обработанные аудио и видео записи</string>
+    <string name="status_completed">Завершено</string>
+
+    <string name="model_manager_title">Менеджер AI Моделей</string>
+    <string name="model_manager_subtitle">Управление локальными весами Whisper GGML</string>
+    
+    <string name="benchmark_title">Аппаратная диагностика</string>
+    <string name="benchmark_subtitle">Характеристики устройства и рекомендации по моделям</string>
+</resources>

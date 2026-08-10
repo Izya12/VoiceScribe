@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:translateX="22"
+        android:translateY="22">
+        <!-- Document outline -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M14,6 C11.8,6 10,7.8 10,10 L10,54 C10,56.2 11.8,58 14,58 L50,58 C52.2,58 54,56.2 54,54 L54,20 L40,6 L14,6 Z M14,10 L38,10 L38,22 L50,22 L50,54 L14,54 L14,10 Z" />
+        
+        <!-- Mic Icon inside document -->
+        <path
+            android:fillColor="#80D8FF"
+            android:pathData="M32,18 C29.24,18 27,20.24 27,23 L27,33 C27,35.76 29.24,38 32,38 C34.76,38 37,35.76 37,33 L37,23 C37,20.24 34.76,18 32,18 Z" />
+        <path
+            android:fillColor="#80D8FF"
+            android:pathData="M40,31 L40,33 C40,36.87 37.26,40.1 33.6,40.82 L33.6,45 L30.4,45 L30.4,40.82 C26.74,40.1 24,36.87 24,31 L26.4,31 C26.4,34.09 28.91,36.6 32,36.6 C35.09,36.6 37.6,34.09 37.6,31 L40,31 Z" />
+            
+        <!-- Soundwave lines at the bottom -->
+        <path
+            android:fillColor="#CCFF90"
+            android:pathData="M18,48 L22,48 L22,50 L18,50 Z M24,46 L28,46 L28,52 L24,52 Z M30,44 L34,44 L34,54 L30,54 Z M36,46 L40,46 L40,52 L36,52 Z M42,48 L46,48 L46,50 L42,50 Z" />
+    </group>
+</vector>
