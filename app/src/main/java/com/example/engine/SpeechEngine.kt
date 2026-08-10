@@ -40,28 +40,36 @@ class GigaAmEngine(
     private var recognizer: OfflineRecognizer? = null
     private var isInitialized = false
 
-    private val encoderPath: String = File(modelFilesDir, "encoder.onnx").absolutePath
-    private val decoderPath: String = File(modelFilesDir, "decoder.onnx").absolutePath
-    private val jointPath: String = File(modelFilesDir, "joint.onnx").absolutePath
-    private val tokensPath: String = File(modelFilesDir, "tokens.txt").absolutePath
+    private val encoderFile: File = File(modelFilesDir, "encoder.int8.onnx").let { if (it.exists()) it else File(modelFilesDir, "encoder.onnx") }
+    private val decoderFile: File = File(modelFilesDir, "decoder.int8.onnx").let { if (it.exists()) it else File(modelFilesDir, "decoder.onnx") }
+    private val jointFile: File = File(modelFilesDir, "joiner.int8.onnx").let {
+        if (it.exists()) it else File(modelFilesDir, "joiner.onnx").let { j ->
+            if (j.exists()) j else File(modelFilesDir, "joint.onnx")
+        }
+    }
+    private val tokensFile: File = File(modelFilesDir, "tokens.txt")
+
+    private val encoderPath: String = encoderFile.absolutePath
+    private val decoderPath: String = decoderFile.absolutePath
+    private val jointPath: String = jointFile.absolutePath
+    private val tokensPath: String = tokensFile.absolutePath
 
     init {
         initSherpaOnnxRecognizer()
     }
 
     private fun initSherpaOnnxRecognizer() {
-        AppLogger.i(TAG, "Инициализация Sherpa-ONNX OfflineRecognizer для GigaAM v3...", context)
+        AppLogger.i(TAG, "Инициализация Sherpa-ONNX OfflineRecognizer для GigaAM...", context)
         
-        val onnxFiles = listOf(File(encoderPath), File(decoderPath), File(jointPath))
+        val onnxFiles = listOf(encoderFile, decoderFile, jointFile)
         for (file in onnxFiles) {
             if (!file.exists() || file.length() < 1024 * 1024L) {
                 throw IllegalStateException("Файл ONNX модели ${file.name} не существует или поврежден (размер: ${file.length()} байт < 1MB)")
             }
         }
 
-        val tokenFile = File(tokensPath)
-        if (!tokenFile.exists() || tokenFile.length() < 100L) {
-            throw IllegalStateException("Файл токенов ${tokenFile.name} не существует или поврежден (размер: ${tokenFile.length()} байт < 100B)")
+        if (!tokensFile.exists() || tokensFile.length() < 50L) {
+            throw IllegalStateException("Файл токенов ${tokensFile.name} не существует или поврежден (размер: ${tokensFile.length()} байт < 50B)")
         }
 
         AppLogger.d(TAG, "Encoder path: $encoderPath (${File(encoderPath).length()} bytes)", context)

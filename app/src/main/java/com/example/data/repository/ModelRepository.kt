@@ -44,8 +44,8 @@ class ModelRepository(
                 name = "Whisper Base (Q4_0)",
                 type = "Whisper",
                 quantization = "Q4_0",
-                sizeBytes = 74 * 1024 * 1024L, // 74 MB
-                estimatedRamBytes = 500 * 1024 * 1024L, // 500 MB RAM
+                sizeBytes = 147 * 1024 * 1024L,
+                estimatedRamBytes = 500 * 1024 * 1024L,
                 supportedLanguages = "ru, en, multi",
                 downloadUrls = listOf("https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.bin"),
                 checksumSha256 = "60ed5f73940176868846c20d7feb307f",
@@ -60,8 +60,8 @@ class ModelRepository(
                 name = "Whisper Tiny (Q4_0)",
                 type = "Whisper",
                 quantization = "Q4_0",
-                sizeBytes = 39 * 1024 * 1024L, // 39 MB
-                estimatedRamBytes = 250 * 1024 * 1024L, // 250 MB RAM
+                sizeBytes = 77 * 1024 * 1024L,
+                estimatedRamBytes = 250 * 1024 * 1024L,
                 supportedLanguages = "ru, en, multi",
                 downloadUrls = listOf("https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-tiny.bin"),
                 checksumSha256 = "be0702a207a7267ee641db21f2461b1d",
@@ -76,8 +76,8 @@ class ModelRepository(
                 name = "Whisper Small (Q4_0)",
                 type = "Whisper",
                 quantization = "Q4_0",
-                sizeBytes = 244 * 1024 * 1024L, // 244 MB
-                estimatedRamBytes = 1000 * 1024 * 1024L, // 1 GB RAM
+                sizeBytes = 466 * 1024 * 1024L,
+                estimatedRamBytes = 1000 * 1024 * 1024L,
                 supportedLanguages = "ru, en, multi",
                 downloadUrls = listOf("https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-small.bin"),
                 checksumSha256 = "1be3a9a20d2d3a3915f013d1e44f83d0",
@@ -88,7 +88,24 @@ class ModelRepository(
                 isDefault = false
             )
         )
-        modelDao.insertModels(defaultList)
+
+        val existing = modelDao.getAllModelsList()
+        if (existing.isEmpty()) {
+            modelDao.insertModels(defaultList)
+        } else {
+            val updatedList = defaultList.map { def ->
+                val cur = existing.find { it.id == def.id }
+                if (cur != null) {
+                    cur.copy(
+                        downloadUrls = def.downloadUrls,
+                        sizeBytes = def.sizeBytes
+                    )
+                } else {
+                    def
+                }
+            }
+            modelDao.insertModels(updatedList)
+        }
     }
 
     suspend fun syncDatabaseWithFileSystem() = withContext(Dispatchers.IO) {
@@ -100,7 +117,7 @@ class ModelRepository(
 
                 if (isSherpa) {
                     val modelDir = if (!model.localFilePath.isNullOrBlank()) File(model.localFilePath) else File(context.filesDir, "models/${model.id}")
-                    val requiredFiles = listOf("encoder.onnx", "decoder.onnx", "joint.onnx", "tokens.txt")
+                    val requiredFiles = listOf("encoder.onnx", "decoder.onnx", "tokens.txt")
                     if (!modelDir.exists() || !modelDir.isDirectory) {
                         isValid = false
                     } else {
@@ -110,6 +127,11 @@ class ModelRepository(
                                 isValid = false
                                 break
                             }
+                        }
+                        val joiner = File(modelDir, "joiner.onnx")
+                        val joint = File(modelDir, "joint.onnx")
+                        if ((!joiner.exists() || joiner.length() == 0L) && (!joint.exists() || joint.length() == 0L)) {
+                            isValid = false
                         }
                     }
                 } else {

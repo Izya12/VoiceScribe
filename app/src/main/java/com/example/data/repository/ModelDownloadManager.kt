@@ -99,15 +99,19 @@ class ModelDownloadManager(private val context: Context) {
                 connection = (url.openConnection() as HttpURLConnection).apply {
                     connectTimeout = 15000
                     readTimeout = 30000
-                    instanceFollowRedirects = true
-                    setRequestProperty("User-Agent", "Mozilla/5.0 (Android; VoiceScribeAI/1.0)")
+                    instanceFollowRedirects = false
+                    setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
                     setRequestProperty("Accept", "*/*")
                 }
                 val status = connection.responseCode
                 if (status in listOf(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_TEMP, 307, 308)) {
                     val location = connection.getHeaderField("Location")
                         ?: throw java.io.IOException("HTTP redirect $status without Location header from $currentUrl")
-                    currentUrl = location
+                    currentUrl = if (location.startsWith("http://") || location.startsWith("https://")) {
+                        location
+                    } else {
+                        URL(URL(currentUrl), location).toString()
+                    }
                     redirects++
                     connection.disconnect()
                 } else {

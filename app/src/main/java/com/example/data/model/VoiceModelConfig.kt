@@ -34,17 +34,12 @@ data class VoiceModelConfig(
             estimatedRamBytes = 800 * 1024 * 1024L, // ~800MB RAM
             supportedLanguages = "ru",
             downloadUrls = listOf(
-                "https://huggingface.co/csukuangfj/sherpa-onnx-giga-am-v3-e2e-rnnt/resolve/main/encoder.onnx",
-                "https://huggingface.co/csukuangfj/sherpa-onnx-giga-am-v3-e2e-rnnt/resolve/main/decoder.onnx",
-                "https://huggingface.co/csukuangfj/sherpa-onnx-giga-am-v3-e2e-rnnt/resolve/main/joint.onnx",
-                "https://huggingface.co/csukuangfj/sherpa-onnx-giga-am-v3-e2e-rnnt/resolve/main/tokens.txt"
+                "https://huggingface.co/csukuangfj/sherpa-onnx-nemo-transducer-giga-am-russian-2024-10-24/resolve/main/encoder.int8.onnx",
+                "https://huggingface.co/csukuangfj/sherpa-onnx-nemo-transducer-giga-am-russian-2024-10-24/resolve/main/decoder.int8.onnx",
+                "https://huggingface.co/csukuangfj/sherpa-onnx-nemo-transducer-giga-am-russian-2024-10-24/resolve/main/joiner.int8.onnx",
+                "https://huggingface.co/csukuangfj/sherpa-onnx-nemo-transducer-giga-am-russian-2024-10-24/resolve/main/tokens.txt"
             ),
-            checksumsSha256 = listOf(
-                "a1b2c3d4e5f678901234567890abcdef1234567890abcdef1234567890abcdef",
-                "b2c3d4e5f6a178901234567890abcdef1234567890abcdef1234567890abcdef",
-                "c3d4e5f6a1b278901234567890abcdef1234567890abcdef1234567890abcdef",
-                "d4e5f6a1b2c378901234567890abcdef1234567890abcdef1234567890abcdef"
-            )
+            checksumsSha256 = emptyList()
         )
 
         val WHISPER_BASE = VoiceModelConfig(

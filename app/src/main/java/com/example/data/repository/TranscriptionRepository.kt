@@ -173,9 +173,12 @@ class TranscriptionRepository(
         config: TranscriptionConfig
     ): String = withContext(Dispatchers.IO) {
         val jobId = UUID.randomUUID().toString()
-        val model = modelDao.getModelById(config.modelId)
-            ?: modelDao.getAnyDownloadedModel()
-            ?: throw Exception("Не найдена подходящая модель Whisper")
+        val requestedModel = modelDao.getModelById(config.modelId)
+        val model = if (requestedModel?.isDownloaded == true) {
+            requestedModel
+        } else {
+            modelDao.getAnyDownloadedModel() ?: requestedModel ?: throw Exception("Не найдена подходящая модель")
+        }
 
         val initialJob = TranscriptionJobEntity(
             id = jobId,
@@ -222,6 +225,23 @@ class TranscriptionRepository(
     ) = withContext(Dispatchers.Default) {
         val startTime = System.currentTimeMillis()
         com.example.util.AppLogger.i("TranscriptionRepository", "Старт пайплайна транскрипции [Job ID: $jobId, media: ${metadata.fileName}]", context)
+
+        if (!model.isDownloaded) {
+            val errorMsg = "Модель '${model.name}' не скачана. Скачайте модель в разделе 'Модели' перед транскрипцией."
+            com.example.util.AppLogger.e("TranscriptionRepository", errorMsg, null, context)
+            val currentJob = jobDao.getJobById(jobId)
+            if (currentJob != null) {
+                jobDao.updateJob(
+                    currentJob.copy(
+                        status = JobState.FAILED.name,
+                        currentStage = "Ошибка: Модель не скачана",
+                        errorMessage = errorMsg
+                    )
+                )
+            }
+            return@withContext
+        }
+
         try {
             // 1. Audio Preprocessing
             updateJobState(jobId, JobState.PREPARING_AUDIO, 0.15f)
